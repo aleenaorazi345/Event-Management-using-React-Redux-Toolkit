@@ -1,7 +1,7 @@
 
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector,useStore } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import { login } from '../store/authSlice';
 
 function Login() {
@@ -9,12 +9,23 @@ function Login() {
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const store = useStore();
   const { currentUser, error } = useSelector(state => state.auth);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    dispatch(login({ email, password }));
-  };
+  
+const handleSubmit = (e) => {
+  e.preventDefault();
+
+  dispatch(login({ email, password }));
+
+  const { currentUser } = store.getState().auth;
+
+  if (currentUser) {
+    navigate('/events');
+  }
+};
+
 
   return (
     <div className="auth-container">
@@ -25,7 +36,7 @@ function Login() {
 
       {currentUser && (
         <p className="auth-message">
-          You are already logged in as {currentUser.name}.
+          Welcome, {currentUser.name}.
         </p>
       )}
 
