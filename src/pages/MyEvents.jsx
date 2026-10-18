@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { cancelRegistration } from '../store/registrationSlice';
+import './MyEvents.css';
 
 function MyEvents() {
   const dispatch = useDispatch();
@@ -13,10 +14,14 @@ function MyEvents() {
 
   if (!currentUser) {
     return (
-      <div>
-        <h1>My Events</h1>
-        <p>Please log in to view your registered events.</p>
-        <Link to="/login">Go to Login</Link>
+      <div className="my-events-page">
+        <div className="my-events-empty">
+          <h1>My Events</h1>
+          <p>Please log in to view your registered events.</p>
+          <Link className="my-events-link" to="/login">
+            Go to Login
+          </Link>
+        </div>
       </div>
     );
   }
@@ -36,11 +41,7 @@ function MyEvents() {
   );
 
   function handleCancel(eventId) {
-    const confirmed = window.confirm(
-      'Are you sure you want to cancel this registration?'
-    );
-
-    if (confirmed) {
+    if (window.confirm('Are you sure you want to cancel this registration?')) {
       dispatch(
         cancelRegistration({
           userEmail: currentUser.email,
@@ -52,54 +53,106 @@ function MyEvents() {
 
   function renderEvent(item) {
     const event = item.event;
+    const venue = event._embedded?.venues?.[0];
 
     return (
-      <div key={event.id}>
-        <h3>{event.name}</h3>
+      <article className="my-event-card" key={event.id}>
+        {event.images?.[0]?.url ? (
+          <img
+            className="my-event-image"
+            src={event.images[0].url}
+            alt={event.name}
+          />
+        ) : (
+          <div className="my-event-image-placeholder">Event</div>
+        )}
 
-        <p>
-          Date: {event.dates?.start?.localDate || 'Date unavailable'}
-        </p>
+        <div className="my-event-content">
+          <h3>{event.name}</h3>
 
-        <p>
-          Venue: {
-            event._embedded?.venues?.[0]?.name || 'Venue unavailable'
-          }
-        </p>
+          <p className="my-event-date">
+            📅 {event.dates?.start?.localDate || 'Date unavailable'}
+          </p>
 
-        <Link to={`/events/${event.id}`}>View Details</Link>
+          <p className="my-event-venue">
+            📍 {venue?.name || 'Venue unavailable'}
+          </p>
 
-        <button onClick={() => handleCancel(event.id)}>
-          Cancel Registration
-        </button>
+          <div className="my-event-actions">
+            <Link
+              className="my-event-link"
+              to={`/events/${event.id}`}
+            >
+              View Details
+            </Link>
 
-        <hr />
-      </div>
+            <button
+              className="my-event-cancel"
+              onClick={() => handleCancel(event.id)}
+            >
+              Cancel Registration
+            </button>
+          </div>
+        </div>
+      </article>
     );
   }
 
   return (
-    <div>
-      <h1>My Events</h1>
+    <main className="my-events-page">
+      <header className="my-events-header">
+        <p className="my-events-eyebrow">YOUR EXPERIENCE</p>
+        <h1>My Events</h1>
+        <p>Keep track of the events you're excited about.</p>
+        <div className="my-events-count">
+          {myEvents.length} {myEvents.length === 1 ? 'event' : 'events'} registered
+        </div>
+      </header>
 
-      <h2>Upcoming Events</h2>
+      <section className="my-events-section">
+        <div className="my-events-section-heading">
+          <h2>Upcoming Events</h2>
+          <span>{upcomingEvents.length}</span>
+        </div>
 
-      {upcomingEvents.length === 0 ? (
-        <p>You have no upcoming registered events.</p>
-      ) : (
-        upcomingEvents.map(renderEvent)
-      )}
+        {upcomingEvents.length === 0 ? (
+          <div className="my-events-empty">
+            <h3>No upcoming events yet</h3>
+            <p>Find something interesting and register for it!</p>
+            <Link className="my-events-link" to="/events">
+              Explore Events
+            </Link>
+          </div>
+        ) : (
+          <div className="my-events-grid">
+            {upcomingEvents.map(renderEvent)}
+          </div>
+        )}
+      </section>
 
-      <h2>Completed Events</h2>
+      <section className="my-events-section">
+        <div className="my-events-section-heading">
+          <h2>Completed Events</h2>
+          <span>{completedEvents.length}</span>
+        </div>
 
-      {completedEvents.length === 0 ? (
-        <p>You have no completed events.</p>
-      ) : (
-        completedEvents.map(renderEvent)
-      )}
+        {completedEvents.length === 0 ? (
+          <p className="my-events-no-completed">
+            Your completed events will appear here.
+          </p>
+        ) : (
+          <div className="my-events-grid">
+            {completedEvents.map(renderEvent)}
+          </div>
+        )}
+      </section>
 
-      <Link to="/events">Explore More Events</Link>
-    </div>
+      <div className="my-events-footer">
+        <Link className="my-events-link" to="/events">
+          + Explore More Events
+        </Link>
+      </div>
+    </main>
   );
 }
 

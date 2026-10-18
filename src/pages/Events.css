@@ -1,0 +1,240 @@
+/* Events Page */
+.events-page {
+  min-height: 100vh;
+  padding: 40px 7%;
+  background: #f7f5ff;
+  color: #29213f;
+}
+
+.events-header {
+  margin-bottom: 30px;
+}
+
+.events-header h1 {
+  margin: 0 0 10px;
+  color: #29213f;
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 800;
+}
+
+.events-header p {
+  margin: 0;
+  color: #716a85;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Search and filters */
+.events-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 25px 0 30px;
+}
+
+.events-search {
+  flex: 1;
+  min-width: 220px;
+  padding: 14px 17px;
+  border: 1px solid #e2daf5;
+  border-radius: 11px;
+  outline: none;
+  background: #fff;
+  color: #29213f;
+  font-size: 15px;
+}
+
+.events-search:focus {
+  border-color: #8057dc;
+  box-shadow: 0 0 0 3px #8057dc20;
+}
+
+.events-filter {
+  min-width: 160px;
+  padding: 13px 15px;
+  border: 1px solid #e2daf5;
+  border-radius: 11px;
+  background: #fff;
+  color: #4e426c;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+/* Events heading */
+.events-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.events-section-heading h2 {
+  margin: 0;
+  font-size: 23px;
+  color: #29213f;
+}
+
+.events-count {
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #eee7ff;
+  color: #6542c0;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Events grid */
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 24px;
+}
+
+.event-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid #ebe5fa;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px #39216d0c;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 32px #39216d18;
+}
+
+.event-card-image {
+  display: block;
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+  background: #e9e1ff;
+}
+
+.event-card-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+.event-card-category {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background: #f0eaff;
+  color: #6542c0;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.event-card h3 {
+  margin: 0 0 12px;
+  color: #29213f;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.event-card-date,
+.event-card-venue {
+  margin: 5px 0;
+  color: #716a85;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.event-card-link {
+  display: inline-block;
+  margin-top: auto;
+  padding-top: 18px;
+  color: #7048d8;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.event-card-link:hover {
+  color: #43258e;
+}
+
+/* Loading, errors, and empty results */
+.events-status,
+.events-empty {
+  padding: 40px 20px;
+  border: 1px dashed #d5c8f2;
+  border-radius: 14px;
+  background: #fff;
+  color: #716a85;
+  text-align: center;
+}
+
+.events-error {
+  padding: 16px;
+  border-radius: 10px;
+  background: #fff0f0;
+  color: #a52b46;
+}
+
+/* Mobile layout */
+@media (max-width: 650px) {
+  .events-page {
+    padding: 25px 16px;
+  }
+
+  .events-toolbar {
+    flex-direction: column;
+  }
+
+  .events-search,
+  .events-filter {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card-image {
+    height: 210px;
+  }
+}
+.events-upcoming-filter {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 15px;
+  border: 1px solid #e2daf5;
+  border-radius: 11px;
+  background: white;
+  color: #4e426c;
+  cursor: pointer;
+}
+
+.events-upcoming-filter input {
+  accent-color: #7048d8;
+  width: 16px;
+  height: 16px;
+}
+
+.events-empty button,
+.events-error button {
+  margin-top: 12px;
+  padding: 11px 18px;
+  border: none;
+  border-radius: 9px;
+  background: #7048d8;
+  color: white;
+  cursor: pointer;
+}
+
+.events-empty button:hover,
+.events-error button:hover {
+  background: #5430b4;
+}

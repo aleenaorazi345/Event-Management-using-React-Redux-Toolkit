@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,10 +6,11 @@ import {
   registerForEvent,
   clearRegistrationMessage,
 } from '../store/registrationSlice';
+import './EventDetails.css';
+
 
 function EventDetails() {
   const { id } = useParams();
-
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -58,74 +58,136 @@ function EventDetails() {
     }
 
     dispatch(clearRegistrationMessage());
-
     dispatch(
       registerForEvent({
         userEmail: currentUser.email,
-        event: event,
+        event,
       })
     );
   }
 
-  if (loading) return <p>Loading event details...</p>;
+  if (loading) {
+    return <div className="details-status">Loading event details...</div>;
+  }
 
-  if (error) {
+  if (error || !event) {
     return (
-      <p>
-        {error} <Link to="/events">Back to events</Link>
-      </p>
+      <div className="details-status">
+        <h2>Oops! Event not found</h2>
+        <p>{error || 'This event is unavailable.'}</p>
+        <Link to="/events" className="details-back-button">
+          Back to Events
+        </Link>
+      </div>
     );
   }
 
-  if (!event) return <p>Event not found.</p>;
-
   const venue = event._embedded?.venues?.[0];
+  const eventDate = event.dates?.start?.localDate;
+  const eventTime = event.dates?.start?.localTime;
 
   return (
-    <div>
-      <Link to="/events">← Back to Events</Link>
+    <main className="event-details-page">
+      <Link to="/events" className="details-back-link">
+        ← Back to Events
+      </Link>
 
-      <h1>{event.name}</h1>
+      <section className="event-details-card">
+        <div className="details-image-container">
+          {event.images?.[0]?.url ? (
+            <img
+              className="details-event-image"
+              src={event.images[0].url}
+              alt={event.name}
+            />
+          ) : (
+            <div className="details-image-placeholder">Event</div>
+          )}
+        </div>
 
-      {event.images?.[0]?.url && (
-        <img src={event.images[0].url} alt={event.name} width="350" />
-      )}
+        <div className="details-content">
+          <span className="details-label">EVENT DETAILS</span>
+          <h1>{event.name}</h1>
 
-      <h3>Date and Time</h3>
-      <p>{event.dates?.start?.localDate || 'Date unavailable'}</p>
-      <p>{event.dates?.start?.localTime || 'Time unavailable'}</p>
+          <div className="details-info-grid">
+            <div className="details-info-item">
+              <span className="details-icon">📅</span>
+              <div>
+                <h3>Date</h3>
+                <p>{eventDate || 'Date unavailable'}</p>
+              </div>
+            </div>
 
-      <h3>Venue</h3>
-      <p>{venue?.name || 'Venue unavailable'}</p>
-      <p>{venue?.city?.name || ''}</p>
+            <div className="details-info-item">
+              <span className="details-icon">🕒</span>
+              <div>
+                <h3>Time</h3>
+                <p>{eventTime || 'Time unavailable'}</p>
+              </div>
+            </div>
 
-      <h3>Event Information</h3>
-      <p>
-        {event.info || event.pleaseNote || 'No additional information available.'}
-      </p>
+            <div className="details-info-item">
+              <span className="details-icon">📍</span>
+              <div>
+                <h3>Venue</h3>
+                <p>{venue?.name || 'Venue unavailable'}</p>
+                <p>{venue?.city?.name || ''}</p>
+              </div>
+            </div>
 
-      <h3>Registration</h3>
+            <div className="details-info-item">
+              <span className="details-icon">🎟️</span>
+              <div>
+                <h3>Admission</h3>
+                <p>View ticket information on Ticketmaster</p>
+              </div>
+            </div>
+          </div>
 
-      {currentUser ? (
-        <button onClick={handleRegister} disabled={alreadyRegistered}>
-          {alreadyRegistered ? 'Already Registered' : 'Register for Event'}
-        </button>
-      ) : (
-        <p>
-          <Link to="/login">Log in</Link> to register for this event.
-        </p>
-      )}
+          <div className="details-description">
+            <h2>About this event</h2>
+            <p>
+              {event.info ||
+                event.pleaseNote ||
+                'More information about this event may be available on Ticketmaster.'}
+            </p>
+          </div>
 
-      {message && <p>{message}</p>}
+          <div className="details-actions">
+            {currentUser ? (
+              <button
+                className="details-register-button"
+                onClick={handleRegister}
+                disabled={alreadyRegistered}
+              >
+                {alreadyRegistered ? '✓ Already Registered' : 'Register for Event'}
+              </button>
+            ) : (
+              <Link to="/login" className="details-register-button">
+                Log in to Register
+              </Link>
+            )}
 
-      {event.url && (
-        <p>
-          <a href={event.url} target="_blank" rel="noreferrer">
-            View on Ticketmaster
-          </a>
-        </p>
-      )}
-    </div>
+            {event.url && (
+              <a
+                className="details-ticket-button"
+                href={event.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                View on Ticketmaster ↗
+              </a>
+            )}
+          </div>
+
+          {message && (
+            <p className="details-feedback" role="status">
+              {message}
+            </p>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
 
