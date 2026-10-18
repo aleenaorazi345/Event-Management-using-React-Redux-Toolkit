@@ -37,26 +37,25 @@ function Events() {
     ),
   ];
 
-  const filteredEvents = events.filter(event => {
-    const matchesSearch = event.name
-      .toLowerCase()
-      .includes(search.toLowerCase().trim());
+ const filteredEvents = events.filter(event => {
+  const name = event.name.toLowerCase();
+  const eventCategory = event.classifications?.[0]?.segment?.name || 'Other';
+  const eventDate = event.dates?.start?.localDate;
 
-    const eventCategory =
-      event.classifications?.[0]?.segment?.name || '';
+  if (!name.includes(search.toLowerCase().trim())) {
+    return false;
+  }
 
-    const matchesCategory =
-      category === 'All' || eventCategory === category;
+  if (category !== 'All' && category !== eventCategory) {
+    return false;
+  }
 
-    const eventDate = event.dates?.start?.dateTime ||
-      event.dates?.start?.localDate;
+  if (upcomingOnly && eventDate && new Date(eventDate) < new Date()) {
+    return false;
+  }
 
-    const matchesUpcoming =
-      !upcomingOnly ||
-      (eventDate && new Date(eventDate) >= new Date());
-
-    return matchesSearch && matchesCategory && matchesUpcoming;
-  });
+  return true;
+});
 
   if (loading) {
     return (
@@ -166,12 +165,12 @@ function Events() {
                 <h3>{event.name}</h3>
 
                 <p className="event-card-date">
-                  📅 {event.dates?.start?.localDate ||
+                   {event.dates?.start?.localDate ||
                     'Date unavailable'}
                 </p>
 
                 <p className="event-card-venue">
-                  📍 {event._embedded?.venues?.[0]?.name ||
+                   {event._embedded?.venues?.[0]?.name ||
                     'Venue unavailable'}
                 </p>
 
