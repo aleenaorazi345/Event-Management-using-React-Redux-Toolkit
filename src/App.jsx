@@ -4,6 +4,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import './App.css';
 function App() {
     const { users, currentUser } = useSelector(state => state.auth);
 

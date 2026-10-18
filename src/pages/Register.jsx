@@ -1,7 +1,8 @@
 
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { register, clearError } from '../store/authSlice';
+import { Link } from 'react-router-dom';
+import { register } from '../store/authSlice';
 
 function Register() {
   const [name, setName] = useState('');
@@ -13,50 +14,62 @@ function Register() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     dispatch(register({ name, email, password }));
   };
 
   return (
-    <div>
-      <h1>Register</h1>
+    <div className="auth-container">
+      <h1>Create an account</h1>
 
-      {currentUser && <p>Welcome, {currentUser.name}!</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <p className="auth-description">
+        Sign up to discover and manage your favorite events.
+      </p>
+
+      {currentUser && (
+        <p className="auth-message">
+          You are already logged in as {currentUser.name}.
+        </p>
+      )}
+
+      {error && <p className="auth-error">{error}</p>}
 
       <form onSubmit={handleSubmit}>
+        <label htmlFor="name">Full name</label>
         <input
+          id="name"
           type="text"
-          placeholder="Full Name"
+          placeholder="Enter your full name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
 
-        <br /><br />
-
+        <label htmlFor="email">Email address</label>
         <input
+          id="email"
           type="email"
-          placeholder="Email"
+          placeholder="you@example.com"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
 
-        <br /><br />
-
+        <label htmlFor="password">Password</label>
         <input
+          id="password"
           type="password"
-          placeholder="Password"
+          placeholder="Create a password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
 
-        <br /><br />
-
-        <button type="submit">Create Account</button>
+        <button type="submit">Create account</button>
       </form>
+
+      <p className="auth-switch">
+        Already have an account? <Link to="/login">Log in</Link>
+      </p>
     </div>
   );
 }
